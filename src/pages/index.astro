@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
+import heroImg from '../gallery-content/20220927_125745.jpg';
 
 const PHONE = '0421 441 520';
 const PHONE_HREF = `tel:${PHONE.replace(/\s/g, '')}`;
@@ -46,7 +47,46 @@ const rawImages = import.meta.glob<{ default: ImageMetadata }>(
   '../gallery-content/*.jpg',
   { eager: true }
 );
-const galleryImages = Object.values(rawImages).map((m) => m.default);
+const imageMap = Object.fromEntries(
+  Object.entries(rawImages).map(([path, mod]) => [path.split('/').pop()!, mod.default])
+);
+// Ordered by visual impact — most striking work first
+const galleryOrder = [
+  '20220927_125745.jpg',  // teal botanical + hot pink piping
+  '20240726_110551.jpg',  // mustard yellow sculptural row
+  '20230808_133929.jpg',  // bold abstract-art fabric chairs
+  '20231212_143507.jpg',  // sky blue + yellow mid-century sofa
+  '20230323_134340.jpg',  // red native-print sofa with timber arms
+  '1000044739.jpg',       // botanical print in boutique mirror
+  '20241206_073737.jpg',  // emerald outdoor chairs on deck
+  '20250526_133919.jpg',  // curved damask chaise
+  '20240426_152954.jpg',  // teal Victorian tufted pair
+  '20231004_141436.jpg',  // blue leather antique button-back
+  '20230314_090729.jpg',  // raspberry wingbacks with print
+  '20230329_130428.jpg',  // geometric retro armchairs
+  '20240219_140353.jpg',  // chartreuse mid-century chair
+  '20250829_092533.jpg',  // cream tufted antique pair
+  '20230802_083209.jpg',  // forest-print wingbacks in home
+  '20240301_084518.jpg',  // blue art deco with tropical detail
+  '20230914_093631.jpg',  // blue tropical scroll armchairs
+  '20231207_084940.jpg',  // Danish mid-century blue tufted
+  '20221220_135932.jpg',  // orange chenille chairs + ottoman
+  '20240913_073207.jpg',  // green Scandi lounge suite in home
+  '20240815_131107.jpg',  // orange tufted pod/space-age chairs
+  '20240131_135532.jpg',  // avocado green curved sectional
+  '1000044735.jpg',       // marine curved banquette in boat
+  '20230202_140435.jpg',  // teal botanical pair outside
+  '1000044740.jpg',       // orange leather 3-piece suite
+  '1000044741.jpg',       // botanical cantilever dining chairs
+  '1000044742.jpg',       // commercial bar seating
+  '20240119_130925.jpg',  // kitchen banquette with bolsters
+  '20240417_144127.jpg',  // pool loungers
+  '1000044744.jpg',       // commercial curved banquette
+  '20241010_093601.jpg',  // low L-shaped sofa
+  '1000044738.jpg',       // room with blue chairs
+  '1000044737.jpg',       // dark moody bar seating
+];
+const galleryImages = galleryOrder.map((name) => imageMap[name]).filter(Boolean);
 ---
 
 <Layout>
@@ -80,6 +120,16 @@ const galleryImages = Object.values(rawImages).map((m) => m.default);
 
   <!-- ═══════════════════════════════ HERO ════════════════════════════════ -->
   <section id="top" class="hero">
+    <Image
+      src={heroImg}
+      alt=""
+      class="hero-bg"
+      width={1600}
+      format="webp"
+      quality={80}
+      loading="eager"
+      aria-hidden="true"
+    />
     <div class="hero-overlay"></div>
     <div class="container hero-content">
       <span class="section-label" style="color: var(--gold-light)">Established Craftsmen</span>
@@ -343,28 +393,25 @@ const galleryImages = Object.values(rawImages).map((m) => m.default);
     display: flex;
     align-items: center;
     background: var(--dark);
-    /*
-      TODO: Add a hero background image by replacing the gradient below:
-      background-image: url('/hero.jpg');
-      background-size: cover;
-      background-position: center;
-    */
-    background-image:
-      repeating-linear-gradient(
-        45deg,
-        rgba(184,150,62,0.03) 0px,
-        rgba(184,150,62,0.03) 1px,
-        transparent 1px,
-        transparent 60px
-      ),
-      linear-gradient(160deg, #1a1208 0%, #111 60%);
     overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    opacity: 0.38;
   }
 
   .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, rgba(17,17,17,0.85) 55%, transparent 100%);
+    background:
+      linear-gradient(to right, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.70) 55%, rgba(10,10,10,0.45) 100%),
+      linear-gradient(to top,   rgba(10,10,10,0.6)  0%, transparent 40%);
   }
 
   .hero-content {
