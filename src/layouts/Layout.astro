@@ -1,0 +1,127 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Harry Taylor Upholstery | Expert Upholstery Services',
+  description = 'Quality upholstery services from Harry Taylor. Sofas, chairs, dining seats, headboards, car & marine upholstery. Call today for a free quote.',
+} = Astro.props;
+
+// TODO: Replace with your Google Ads Conversion ID (format: AW-XXXXXXXXXX)
+const GAD_ID = 'AW-CONVERSION_ID';
+// TODO: Replace with your phone number conversion label from Google Ads
+const PHONE_CONVERSION_LABEL = 'PHONE_CONVERSION_LABEL';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Google Ads tag with Conversion Linker -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GAD_ID}`}></script>
+    <script define:vars={{ GAD_ID, PHONE_CONVERSION_LABEL }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      // Conversion Linker is automatically enabled by this config call
+      gtag('config', GAD_ID);
+
+      // Called when the phone number is clicked
+      window.trackPhoneClick = function () {
+        gtag('event', 'conversion', {
+          send_to: GAD_ID + '/' + PHONE_CONVERSION_LABEL,
+        });
+      };
+    </script>
+
+    <style is:global>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --charcoal: #1c1c1c;
+        --dark: #111111;
+        --gold: #b8963e;
+        --gold-light: #d4af6a;
+        --cream: #f5f0e8;
+        --warm-white: #faf8f5;
+        --mid-grey: #6b6b6b;
+        --light-grey: #e8e4de;
+        --font-serif: 'Georgia', 'Times New Roman', serif;
+        --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: var(--font-sans);
+        background: var(--warm-white);
+        color: var(--charcoal);
+        line-height: 1.6;
+      }
+
+      img { display: block; max-width: 100%; height: auto; }
+
+      a { color: inherit; text-decoration: none; }
+
+      .container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .section-label {
+        display: block;
+        font-size: 0.75rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+      }
+
+      h2.section-heading {
+        font-family: var(--font-serif);
+        font-size: clamp(1.75rem, 4vw, 2.75rem);
+        font-weight: normal;
+        color: var(--charcoal);
+        line-height: 1.25;
+        margin-bottom: 1rem;
+      }
+
+      .section-intro {
+        font-size: 1.05rem;
+        color: var(--mid-grey);
+        max-width: 560px;
+      }
+
+      section { padding: 80px 0; }
+
+      /* Phone CTA button */
+      .btn-phone {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--gold);
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 14px 28px;
+        border-radius: 4px;
+        transition: background 0.2s;
+        white-space: nowrap;
+      }
+      .btn-phone:hover { background: var(--gold-light); }
+      .btn-phone svg { flex-shrink: 0; }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
